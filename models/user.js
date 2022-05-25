@@ -28,31 +28,7 @@ const userSchema = moongoose.Schema({
     clubsupports:{
         type:String,
         require: false
-    },
-    tokens :[
-       {
-        token:{
-            type:String,
-            required: true
-        }
-       }
-    ]
-    
+    }
 })
-// userSchema.method.generateAuthToken = async function(){
-//     // try{
-//     //     let token = jwt.sign({_id : this._id}, process.env.jwtsecretkey )
-//     //     this.tokens = this.tokens.concat({token:token})
-//     //     await this.save()
-//     //     return token
-        
-//     // }catch(err){
-//     //     console.log(err)
-//     // }
-//     console.log('method')
-// }
-// userSchema.method('test', function(){
-//     console.log("Bhuwan")
-//     next()
-// })
+
 module.exports = moongoose.model('User', userSchema)

@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const CryptoJS = require('crypto-js')
 const dotenv = require('dotenv')
-const jwt = require('jsonwebtoken')
+const {createToken} = require('./auth')
 dotenv.config()
 
 exports.addUser  = async (req,res) =>{
@@ -26,8 +26,9 @@ exports.addUser  = async (req,res) =>{
    else{
         try{
              await newUser.save()
-             
-             console.log('Saved')
+             const token = createToken(newUser.id)
+            
+             res.cookie('jwt', token, { httpOnly: true, maxAge: 86400 });
              res.send(newUser)
           }catch(err){
                console.log(err)
@@ -62,17 +63,18 @@ exports.login = async (req,res) =>{
                   res.statusCode(404).send("Incorrect email")
               }
               else{
-                    // let token = jwt.sign(user.id, process.env.jwtsecretkey )
-                    // user.tokens.push({token:token})
-                    // await user.save()
+                   
                     const hashedPassword = CryptoJS.AES.decrypt(
                     user.password,
                     process.env.hash_secret
                 );
                 const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
                 if(req.body.password === originalPassword){
-                        res.send(user)
-                    }else{
+                      const token = createToken(user.id)
+                      res.cookie('jwt', token, { httpOnly: true, maxAge: 86400 });
+                      req.user = user
+                      res.send(user)
+                }else{
                         res.send('incorrect password')
                 }
               }
