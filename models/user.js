@@ -6,20 +6,22 @@ dotenv.config()
 const userSchema = moongoose.Schema({
     firstname:{
         type:String,
-        require:true,
+        required:true,
     },
     lastname:{
         type:String,
-        require:true
+        required:true
     },
     email:{
         type:String,
-        require:true,
-        uniqure:true
+        required: [true, 'Please enter an email'],
+        unique: true,
+        lowercase: true,
     },
     password:{
         type:String,
-        require:true
+        required: [true, 'Please enter a password'],
+        minlength: [6, 'Minimum password length is 6 characters'],
     },
     isadmin:{
         type:Boolean,

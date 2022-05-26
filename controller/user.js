@@ -2,18 +2,19 @@ const User = require('../models/user')
 const CryptoJS = require('crypto-js')
 const dotenv = require('dotenv')
 const {createToken} = require('./auth')
+const {checkError} = require('../controller/error')
 dotenv.config()
 
 exports.addUser  = async (req,res) =>{
-
+    const { firstname, lastname , email , gender ,  clubsupports , password } = req.body;
    const newUser = new User({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        gender : req.body.gender,
-        club : req.body.clubsupports,
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        gender : gender,
+        club : clubsupports,
         password: CryptoJS.AES.encrypt(
-          req.body.password,
+          password,
           process.env.hash_secret
         ).toString()
          
@@ -31,7 +32,9 @@ exports.addUser  = async (req,res) =>{
              res.cookie('jwt', token, { httpOnly: true, maxAge: 86400 });
              res.send(newUser)
           }catch(err){
-               console.log(err)
+            const errors =  checkError(err)
+            console.log(errors)
+             res.send(errors)
           }
      }
 }
