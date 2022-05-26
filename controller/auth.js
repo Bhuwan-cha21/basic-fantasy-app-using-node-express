@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
+const User = require('../models/user')
 dotenv.config()
 exports.createToken =  ( id) =>{
     const token =   jwt.sign({id} , process.env.jwtsecretkey , { expiresIn: 86400})
@@ -26,6 +27,13 @@ exports.requireAuth = (req, res, next) => {
   };
 
 exports.isAdmin =  ( req,res, next) =>{
-  console.log(req.user)
-  next()
+    const token = req.cookies.jwt
+    const dtoken = jwt.decode(token) //decoded token
+    const user = User.findById( dtoken.id)
+    if(user.isAdmin == true){
+      next()
+    }else{
+      res.send("You cannot do this")
+    }
+  
 }

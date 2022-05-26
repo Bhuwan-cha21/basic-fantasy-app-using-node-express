@@ -72,7 +72,6 @@ exports.login = async (req,res) =>{
                 if(req.body.password === originalPassword){
                       const token = createToken(user.id)
                       res.cookie('jwt', token, { httpOnly: true, maxAge: 86400 });
-                      req.user = user
                       res.send(user)
                 }else{
                         res.send('incorrect password')
